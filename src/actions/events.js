@@ -11,3 +11,10 @@ import { types } from "../types/types"
     type: types.eventSetActive,
     payload: event
 })
+
+export const eventClearActiveEvent = ( ) => ({ type: types.eventClearActiveEvent })
+
+export const eventUpdated = ( event ) => ({
+    type: types.eventUpdated,
+    payload: event
+})

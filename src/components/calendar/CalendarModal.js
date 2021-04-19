@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import DateTimePicker from 'react-datetime-picker';
 
@@ -6,6 +6,7 @@ import "./styleModal.css";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { uiCloseModal } from "../../actions/uiAction";
+import { eventAddNew, eventClearActiveEvent, eventUpdated } from "../../actions/events";
 
 
 const customStyles = {
@@ -25,59 +26,92 @@ const now = moment().minute(0).second(0).add( 1 , 'hours')
 const nowPlus1 = now.clone().add( 1 , 'hours')
 
 
+// Lo coloco afuera para que cuando se vuelva a renderizar el componente
+// no se vuelva a generar esa constante
+
+const initialEvent = {
+    title: '',
+    start: now.toDate(),
+    end: nowPlus1.toDate(),
+    notes: ''
+}
 
 
 export const CalendarModal = () => {
 
   const dispatch = useDispatch()
+
+  const { modalOpen } = useSelector(state => state.ui)
+  const { activeEvent } = useSelector(state => state.calendar)
   
   const [ dateStart, setDateStart ] = useState( now.toDate() )
   const [ dateEnd, setDateEnd ] = useState( nowPlus1.toDate() )
-  const [formValues, setFormValues] = useState({
-    title: 'Evento',
-    start: now.toDate(),
-    end: nowPlus1.toDate(),
-    notes: ''
-  })
   const [ titleValid, setTitleValid ] = useState(true)
-
-  const { modalOpen } = useSelector(state => state.ui)
-  const [modalOpened, setModalOpened] = useState(modalOpen)
-  console.log( modalOpen)
-
+  
+  const [formValues, setFormValues] = useState( initialEvent )
+  // const [modalOpened, setModalOpened] = useState(modalOpen)
 
   const { title, notes } = formValues;
 
+  useEffect(() => {
+      if( activeEvent ) {
+         setFormValues( activeEvent )
+      }
+  }, [ activeEvent, setFormValues ])
+
   const handleInputChange = ( { target } ) => {
-    setFormValues( {
-      ...formValues,
-      [ target.name ] : target.value
-    })
+        setFormValues( {
+          ...formValues,
+          [ target.name ] : target.value
+        })
   }
 
   const handleSubmitForm = ( e ) => {
-    e.preventDefault();
-        
-    if( title.trim().length < 2 ){
-      return setTitleValid ( false )
-    }
-    setTitleValid ( true )
-    closeModal()
+        e.preventDefault();            
+        if( title.trim().length < 2 ){
+          return setTitleValid ( false )
+        }        
+        setTitleValid ( true ) 
+
+        if (activeEvent) {
+          dispatch( eventUpdated( formValues ))
+        }
+        else{
+          dispatch (eventAddNew( {
+              ...formValues,
+              id: new Date().getTime(),
+              user: { 
+                _id: 135345,
+                name: 'Fernando'
+              }
+            } ) )
+        }
+
+        closeModal()      
   }
 
   const closeModal = () => {
-    console.log("cerrando....");
     dispatch( uiCloseModal() )
-    setModalOpened(false)
+    dispatch ( eventClearActiveEvent() )
+    setFormValues( initialEvent )
+    // setModalOpened(false)
+
   };
 
   const handleStartDateChange = ( e ) => {
-    setDateStart(e);
-
+        setDateStart(e);
+        setFormValues({
+          ...formValues,
+          start: e
+        })
   }
 
   const handleEndDateChange = ( e ) => {
-    setDateEnd( e );
+        setDateEnd( e );
+        setFormValues({
+          ...formValues,
+          end: e
+        })
   }
 
   return (
