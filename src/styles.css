@@ -15,12 +15,25 @@ html, body {
 }
 
 /* FABS (Floating Action Button) */
+    /* AddNewFab */
 .fab {
     border-radius: 100%;
     bottom: 25px;
-    font-size: 25px;
+    font-size: 20px;
     padding: 20px;
     position: fixed;
     right: 25px;
     z-index: 999;
 }
+
+    /* DeleteEventFab */
+.fab-delete {
+    border-radius: 5px;
+    bottom: 25px;
+    padding: 10px;
+    position: fixed;
+    left: 25px;
+    z-index: 999;
+}
+
+/* end FABS  */

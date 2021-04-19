@@ -57,6 +57,10 @@ export const CalendarModal = () => {
       if( activeEvent ) {
          setFormValues( activeEvent )
       }
+      else {
+        // si activeEvent = null, establezco los valores por defercto => formValues = initialEvent
+        setFormValues( initialEvent )
+      }
   }, [ activeEvent, setFormValues ])
 
   const handleInputChange = ( { target } ) => {
@@ -70,8 +74,7 @@ export const CalendarModal = () => {
         e.preventDefault();            
         if( title.trim().length < 2 ){
           return setTitleValid ( false )
-        }        
-        setTitleValid ( true ) 
+        }               
 
         if (activeEvent) {
           dispatch( eventUpdated( formValues ))
@@ -86,7 +89,7 @@ export const CalendarModal = () => {
               }
             } ) )
         }
-
+        setTitleValid ( true ) 
         closeModal()      
   }
 
@@ -124,7 +127,12 @@ export const CalendarModal = () => {
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
     >
-      <h3> Nuevo evento </h3>
+      <h3> {
+            ( activeEvent )
+                ? 'Editar evento' 
+                : 'Nuevo evento' 
+          } 
+      </h3>
       <hr />
       <form 
         className="container"
