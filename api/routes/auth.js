@@ -2,37 +2,42 @@
     Rutas de Usuarios / Auth
     host + /api/auth
 */
-const express = require('express');
-const router = express.Router();
-const { check }=  require('express-validator')
+const { Router } = require('express');
+const { check } = require('express-validator');
+const { validarCampos } = require('../middlewares/validar-campos');
 const { crearUsuario, loginUsuario, revalidarToken } = require('../controllers/auth');
-const { validarCampos } = require('../middlewares/validarCampos');
+const { validarJWT } = require('../middlewares/validar-jwt');
+
+
+const router = Router();
 
 
 
 router.post(
-    '/new',
-    [
-        check('name', 'El name es obligatorio').not().isEmpty(),
+    '/new', 
+    [ // middlewares
+        check('name', 'El nombre es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
-        check('password').isLength({min: 6}).withMessage('El password debe contener al menos 6 caracteres'),
+        check('password', 'El password debe de ser de 6 caracteres').isLength({ min: 6 }),
         validarCampos
     ],
-    crearUsuario );
-
+    crearUsuario 
+);
 
 router.post(
     '/',
     [
-        check('email').isEmail().withMessage('El email es obligatorio'),
-        check('password')
-            .isLength({ min: 5 }).withMessage('El password debe contener al menos 6 caracteres')
-            .matches(/\d/).withMessage('must contain a number'),
+        check('email', 'El email es obligatorio').isEmail(),
+        check('password', 'El password debe de ser de 6 caracteres').isLength({ min: 6 }),
         validarCampos
     ],
-    loginUsuario );
+    loginUsuario 
+);
 
-router.get('/renew', revalidarToken );
+
+router.get('/renew', validarJWT ,revalidarToken );
+
+
 
 
 module.exports = router;
