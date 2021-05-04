@@ -6,7 +6,7 @@ import "./styleModal.css";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { uiCloseModal } from "../../actions/uiAction";
-import { eventAddNew, eventClearActiveEvent, eventUpdated } from "../../actions/events";
+import { eventClearActiveEvent, eventStartAddNew, eventUpdated } from "../../actions/events";
 
 
 const customStyles = {
@@ -80,14 +80,7 @@ export const CalendarModal = () => {
           dispatch( eventUpdated( formValues ))
         }
         else{
-          dispatch (eventAddNew( {
-              ...formValues,
-              id: new Date().getTime(),
-              user: { 
-                _id: 135345,
-                name: 'Fernando'
-              }
-            } ) )
+          dispatch (eventStartAddNew( formValues ) )
         }
         setTitleValid ( true ) 
         closeModal()      
