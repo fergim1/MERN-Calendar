@@ -115,3 +115,5 @@ const eventLoaded = ( events ) => ({
     type: types.eventLoaded,
     payload: events
 })
+
+export const eventLogout = () => ({ type: types.eventLogout})
