@@ -18,7 +18,6 @@ import { types } from "../types/types"
                     name: name
                 }
 
-                console.log(event)
                 dispatch(eventAddNew( event ))
             }
       
@@ -46,3 +45,28 @@ export const eventUpdated = ( event ) => ({
 })
 
 export const eventDeleted = ( ) => ({ type: types.eventDeleted })
+
+
+
+export const eventStartLoading = () => {
+    return async (dispatch) => {
+
+        try {
+            const resp = await fetchConToken ( 'events');
+            const body = await resp.json();
+            const eventos = body.eventos
+    
+            // dispatch( eventLoaded( eventos ))
+    
+            console.log(eventos)
+            
+        } catch (error) {
+            console.log(error)
+        }        
+    }
+}
+
+const eventLoaded = ( events ) => ({
+    type: types.eventLoaded,
+    payload: events
+})
