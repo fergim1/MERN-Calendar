@@ -6,7 +6,7 @@ import "./styleModal.css";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { uiCloseModal } from "../../actions/uiAction";
-import { eventClearActiveEvent, eventStartAddNew, eventUpdated } from "../../actions/events";
+import { eventClearActiveEvent, eventStartAddNew, eventStartUpdate } from "../../actions/events";
 
 
 const customStyles = {
@@ -24,7 +24,6 @@ Modal.setAppElement("#root");
 
 const now = moment().minute(0).second(0).add( 1 , 'hours')
 const nowPlus1 = now.clone().add( 1 , 'hours')
-
 
 // Lo coloco afuera para que cuando se vuelva a renderizar el componente
 // no se vuelva a generar esa constante
@@ -49,7 +48,6 @@ export const CalendarModal = () => {
   const [ titleValid, setTitleValid ] = useState(true)
   
   const [formValues, setFormValues] = useState( initialEvent )
-  // const [modalOpened, setModalOpened] = useState(modalOpen)
 
   const { title, notes } = formValues;
 
@@ -77,7 +75,7 @@ export const CalendarModal = () => {
         }               
 
         if (activeEvent) {
-          dispatch( eventUpdated( formValues ))
+          dispatch( eventStartUpdate( formValues ))
         }
         else{
           dispatch (eventStartAddNew( formValues ) )
@@ -90,8 +88,6 @@ export const CalendarModal = () => {
     dispatch( uiCloseModal() )
     dispatch ( eventClearActiveEvent() )
     setFormValues( initialEvent )
-    // setModalOpened(false)
-
   };
 
   const handleStartDateChange = ( e ) => {
@@ -113,7 +109,6 @@ export const CalendarModal = () => {
   return (
     <Modal
       isOpen={modalOpen}
-      //   onAfterOpen={afterOpenModal}
       onRequestClose={closeModal}
       style={customStyles}
       className="modal"
