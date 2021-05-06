@@ -8,7 +8,6 @@ Se utilizó :
 - react-big-calendar
 - react-modal
 - React-DateTime-Picker
-- Variables de entorno
 - Express-Validator
 - MongooseJS
 - Json Web Token
